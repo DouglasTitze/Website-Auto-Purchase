@@ -1,0 +1,97 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from chromedriver_py import binary_path
+service_object = Service(binary_path)
+
+
+def verifyPurchase():
+    verification = input("Enter Y to complete purchase or N to cancel the purchase".center(200, "-")).lower()
+
+    if verification == ("y" or "yes"):
+        return True
+    else:
+        exit()
+
+
+driver = webdriver.Chrome(service=service_object)  # Control a Chrome browser through this variable
+driver.get("https://www.saucedemo.com/")  # Open the website
+
+# Log into the website
+userNameField = driver.find_element("xpath", '//*[@id="user-name"]')
+userNameField.send_keys("standard_user")
+
+passwordField = driver.find_element("xpath", '//*[@id="password"]')
+passwordField.send_keys("secret_sauce")
+
+submitButton = driver.find_element("xpath", '//*[@id="login-button"]')
+submitButton.click()
+
+# Sort the items by highest to lowest
+sortButton = driver.find_element("xpath", '//*[@id="header_container"]/div[2]/div[2]/span/select')
+sortButton.click()
+
+highLowButton = driver.find_element("xpath", '//*[@id="header_container"]/div[2]/div[2]/span/select/option[4]')
+highLowButton.click()
+
+# Add the three lowest cost items
+item1Button = driver.find_element("xpath", '//*[@id="add-to-cart-sauce-labs-onesie"]')
+item1Button.click()
+
+item2Button = driver.find_element("xpath", '//*[@id="add-to-cart-sauce-labs-bike-light"]')
+item2Button.click()
+
+item3Button = driver.find_element("xpath", '//*[@id="add-to-cart-test.allthethings()-t-shirt-(red)"]')
+item3Button.click()
+
+# Go to shopping cart
+shoppingCartButton = driver.find_element("xpath", '//*[@id="shopping_cart_container"]/a')
+shoppingCartButton.click()
+
+# Go to checkout page 1 (User information)
+checkoutButton = driver.find_element("xpath", '//*[@id="checkout"]')
+checkoutButton.click()
+
+# Fill in user information on checkout page 1
+firstNameField = driver.find_element("xpath", '//*[@id="first-name"]')
+firstNameField.send_keys("Douglas")
+
+lastNameField = driver.find_element("xpath", '//*[@id="last-name"]')
+lastNameField.send_keys("Titze")
+
+zipCodeField = driver.find_element("xpath", '//*[@id="postal-code"]')
+zipCodeField.send_keys("33163")
+
+# Go to checkout page 2 (Overview)
+continueButton = driver.find_element("xpath", '//*[@id="continue"]')
+continueButton.click()
+
+# Print item names, item price, and total price
+item1Name = driver.find_element("xpath", '//*[@id="item_2_title_link"]/div').text
+item1Price = driver.find_element("xpath",
+                                 '//*[@id="checkout_summary_container"]/div/div[1]/div[3]/div[2]/div[2]/div').text
+print(item1Name, "costs", item1Price)
+
+item2Name = driver.find_element("xpath", '//*[@id="item_0_title_link"]/div').text
+item2Price = driver.find_element("xpath",
+                                 '//*[@id="checkout_summary_container"]/div/div[1]/div[4]/div[2]/div[2]/div').text
+print(item2Name, "costs", item2Price)
+
+item3Name = driver.find_element("xpath", '//*[@id="item_3_title_link"]/div').text
+item3Price = driver.find_element("xpath",
+                                 '//*[@id="checkout_summary_container"]/div/div[1]/div[5]/div[2]/div[2]/div').text
+print(item3Name, "costs", item3Price, end="\n\n")
+
+totalPrice = driver.find_element("xpath", '//*[@id="checkout_summary_container"]/div/div[2]/div[7]').text
+print(totalPrice)
+
+allItems = [item1Name, item2Name, item3Name]
+
+# Verify with user if the purchase information is correct
+driver.minimize_window()
+verifyPurchase()
+driver.maximize_window()
+
+
+# Complete purchase
+completeButton = driver.find_element("xpath", '//*[@id="finish"]')
+completeButton.click()
