@@ -84,8 +84,6 @@ print(item3Name, "costs", item3Price, end="\n\n")
 totalPrice = driver.find_element("xpath", '//*[@id="checkout_summary_container"]/div/div[2]/div[7]').text
 print(totalPrice)
 
-allItems = [item1Name, item2Name, item3Name]
-
 # Verify with user if the purchase information is correct
 driver.minimize_window()
 verifyPurchase()
